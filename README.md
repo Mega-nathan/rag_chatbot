@@ -155,7 +155,6 @@ Launch the FastAPI development server:
 ```bash
 fastapi dev app/main.py
 ```
-The backend API documentation is now available at: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
@@ -174,13 +173,6 @@ Launch the Vite React client:
 ```bash
 npm run dev
 ```
-Open your browser and navigate to the printed URL (typically [http://localhost:5173/](http://localhost:5173/) or [http://localhost:5174/](http://localhost:5174/)).
 
 ---
 
-## 🌳 Git Commit Policy
-All changes in this repository follow the **Conventional Commits** specification:
-* `feat(...)`: A new user-facing feature.
-* `fix(...)`: A bug fix.
-* `chore(...)`: General maintenance, dependencies updates, config edits.
-* `docs(...)`: Documentation adjustments.
