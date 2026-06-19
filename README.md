@@ -1,0 +1,186 @@
+# Crop Advisory RAG-Based Multilingual Chatbot (CropAdvisor)
+
+CropAdvisor is a state-of-the-art agricultural advisory system designed to assist farmers and crop specialists. It combines a Retrieval-Augmented Generation (RAG) backend with a highly polished, responsive, and multilingual frontend interface. Users can query crop documents in **English**, **Tamil (தமிழ்)**, **Hindi (हिन्दी)**, or **Telugu (తెలుగు)**, receiving structured expert guidance sourced from local agricultural documents.
+
+---
+
+## 🌟 Key Features
+
+### 🚀 Backend & RAG Pipeline
+* **FastAPI Web Server:** Lightweight, high-performance API server exposing `/api/query` for client requests.
+* **Document Ingestion:** Parses PDFs and DOCX files from the local storage folders using `PyMuPDF` and `PyPDF`.
+* **Local Embeddings:** Employs the `SentenceTransformer` open-source models to convert document chunks into vector coordinates locally.
+* **Dual Vector Databases:** Interfaces with both `ChromaDB` and `FAISS` to store and query text vectors with similarity distance ranking metrics.
+* **Fast LLM Generation:** Integrates with Groq's high-speed server APIs (`langchain-groq`) to synthesise retrieve-augmented search context into natural language advice.
+
+### 🎨 Frontend & UI Layout
+* **Complete Multilingual Support:** Instantly switches UI copy (headers, inputs, greetings, and timestamps) across English, Tamil, Hindi, and Telugu.
+* **Dynamic Query Directives:** Automatically injects linguistic context prompting helpers (e.g. `(Please reply in Tamil / தமிழில் பதிலளிக்கவும்)`) into the API requests, prompting the backend LLM to write replies in the selected tongue.
+* **Modular Clean Architecture:** Isolates styling assets, SVG vectors, default profile avatars, and text parsers into modular, single-responsibility files.
+* **Premium Aesthetics:** Employs a custom forest green color palette, Google Fonts typography (Outfit, Plus Jakarta Sans), smooth CSS message animations, sequential typing indicators, and custom scrollbars.
+* **100% Responsive Adaptive Layout:** Automatically fits mobile viewports, keeping the rounded input bar floating at the bottom.
+
+---
+
+## 💻 Tech Stack
+
+### Frontend
+* **Core:** React 19, TypeScript
+* **Tooling:** Vite, ESLint
+* **Styling:** Vanilla CSS3 (Custom Variables, Flexbox, Keyframes, Media Breakpoints)
+
+### Backend
+* **Core API:** FastAPI (Uvicorn/Standard)
+* **AI Orchestrator:** LangChain (langchain-core, langchain-community)
+* **Model Endpoint:** Groq LLM API (via `langchain-groq`)
+* **Vector Store:** ChromaDB, FAISS
+* **Embeddings:** SentenceTransformers (local CPU inference)
+* **Parsers:** PyMuPDF (fitz), PyPDF, Python-dotenv
+
+---
+
+## 📂 Project Directory Structure
+
+```
+rag_chatbot/
+├── backend/
+│   ├── app/
+│   │   ├── api/             # API Router endpoints
+│   │   │   └── chat.py      # POST /query route definition
+│   │   ├── services/        # RAG pipeline modules
+│   │   │   ├── __init__.py
+│   │   │   ├── preprocessing.py # Doc loader and text chunk splitters
+│   │   │   ├── embeddings.py    # Local SentenceTransformer services
+│   │   │   ├── vectorstore.py   # ChromaDB database client
+│   │   │   ├── ingestion.py     # Document loader trigger pipeline
+│   │   │   ├── retriver.py      # Chromadb similarity searches
+│   │   │   └── main.py          # Groq context generation orchestrator
+│   │   ├── db/              # Vector database storage folder (git ignored)
+│   │   ├── data/            # PDF and DOCX raw reference files
+│   │   └── main.py          # FastAPI application server entrypoint
+│   ├── requirements.txt     # Python package requirements
+│   └── .gitignore           # Backend environment ignore parameters
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/      # UI Modular Components
+│   │   │   ├── Icons.tsx    # SVG Icon vector path library
+│   │   │   └── Avatar.tsx   # Default photo avatars (Bot/User)
+│   │   ├── utils/           # Utility Helpers
+│   │   │   └── helpers.ts   # Formatting times & markdown parsers
+│   │   ├── constants/       # Localized Assets
+│   │   │   └── translations.ts # Copy assets for English, Tamil, Hindi, Telugu
+│   │   ├── App.tsx          # Chat application layout & state manager
+│   │   ├── index.css        # Global CSS stylesheet & design tokens
+│   │   └── main.tsx         # React root mounter
+│   ├── package.json         # Node dependency definitions
+│   └── vite.config.ts       # Bundler setup config
+│
+└── README.md                # Comprehensive documentation
+```
+
+---
+
+## 🔌 API Endpoint Documentation
+
+### **Query Chatbot**
+Queries the RAG agricultural index database.
+
+* **URL:** `/api/query`
+* **Method:** `POST`
+* **Headers:** `Content-Type: application/json`
+* **Payload Structure:**
+  ```json
+  {
+    "query": "Your search query or question here"
+  }
+  ```
+
+* **Response Schema (200 OK):**
+  ```json
+  {
+    "query": "Your search query or question here",
+    "response": "Structured markdown/HTML advice text generated by LLM.",
+    "sources": null
+  }
+  ```
+
+* **Example Request (Tamil):**
+  ```json
+  {
+    "query": "கோதுமை மஞ்சள் இலைகள் (Please reply in Tamil / தமிழில் பதிலளிக்கவும்)"
+  }
+  ```
+
+---
+
+## 🛠️ Installation & Setup
+
+### 1. Prerequisites
+* Python 3.10+ installed
+* Node.js 18+ installed
+
+---
+
+### 2. Backend Setup
+Navigate into the `backend/` directory:
+```bash
+cd backend
+```
+
+Create a virtual environment and activate it:
+```bash
+# Windows
+python -m venv .venv
+.venv\Scripts\activate
+
+# macOS/Linux
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install requirements:
+```bash
+pip install -r requirements.txt
+```
+
+Create a `.env` file inside `backend/` and insert your Groq API key:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+Place reference PDFs or DOCX files inside the `backend/app/data/pdfs/` and `backend/app/data/docx/` folders.
+
+Launch the FastAPI development server:
+```bash
+fastapi dev app/main.py
+```
+The backend API documentation is now available at: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+---
+
+### 3. Frontend Setup
+Navigate into the `frontend/` directory:
+```bash
+cd ../frontend
+```
+
+Install packages:
+```bash
+npm install
+```
+
+Launch the Vite React client:
+```bash
+npm run dev
+```
+Open your browser and navigate to the printed URL (typically [http://localhost:5173/](http://localhost:5173/) or [http://localhost:5174/](http://localhost:5174/)).
+
+---
+
+## 🌳 Git Commit Policy
+All changes in this repository follow the **Conventional Commits** specification:
+* `feat(...)`: A new user-facing feature.
+* `fix(...)`: A bug fix.
+* `chore(...)`: General maintenance, dependencies updates, config edits.
+* `docs(...)`: Documentation adjustments.
